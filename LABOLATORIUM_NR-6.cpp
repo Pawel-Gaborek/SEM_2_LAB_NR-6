@@ -1,282 +1,240 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 
 using namespace std;
 
-//ponizej definiuje klase dla nazw zesolow. W tej klasie dla odmiany korzystam z konstruktora.
-class TeamName
+class matrix
 {
+    vector<vector<double>>matrix_matrix;
+    int columns;
+    int lines;
+
 public:
-    string nameOfTeam;
-    //ponizej tworze kontruktor. Nawa musi byc taka sama jak nazwa klasy = "TeamName"
-    TeamName(string Team_Name):
-    nameOfTeam(Team_Name)
+    
+    matrix(int columns, int lines)
     {
+        vector<vector<double>>matrix_matrix(columns, vector<double>( lines ) );;
+        for (int j=0 ; j<columns ; j++)
+        {
+            for (int i=0 ; i<lines ; i++)
+            {
+                matrix_matrix[j][i]=0;
+            }
+        }
         
     }
-};
 
-//ponizej definiuje klase dla pojedynczego zawodnika. W c++ praktycznie struktura i klasa sie niewiele roznia,
-//jednak klasa mi umozliwa definiowanie dostepnu do ziennych
-class PersonalOfPlayer
-{
-    //definiuje zmienne do ktorych jest ogolny dostep w klasie publicznej
-public:
-    string PlayerName;
-    string PlayerSurname;
-    string PlayerHeight;
-    string PlayerAge;
-    string PlayerPosition;
     
-    //virtual PersonalOfPlayer* clone()
-    //{
-    //    return new PersonalOfPlayer(*this);
-    //}
-    
-    PersonalOfPlayer* deepCopy(PersonalOfPlayer *playerNew)
+    matrix(int columns, int lines, vector<string>temp)
     {
-        return new PersonalOfPlayer(*playerNew);
+        vector<vector<double>>matrix_matrix(columns, vector<double>( lines ) );
+        for (int j=2 ; j<columns ; j++)
+        {
+            for (int i=0 ; i<lines ; i++)
+            {
+                matrix_matrix[j][i]=stod(temp[4]);
+            }
+        }
+        for (int ii=0 ; ii <= columns ; ii++)
+        {
+            for (int jj=0 ;  jj<= lines ; jj++)
+            {
+                cout << "Kolumna: " << ii+1 << " wiersz: " << jj+1 << " wynosi: " << matrix_matrix[ii][jj] << "\n" << endl;
+            }
+        }
     }
-};
-
-class CopyTeam
-{
-    //definiuje zmienne do ktorych jest ogolny dostep w klasie publicznej
-public:
-    string PlayerName;
-    string PlayerSurname;
-    string PlayerHeight;
-    string PlayerAge;
-    string PlayerPosition;
     
-    CopyTeam (const PersonalOfPlayer &);
-    //PersonalOfPlayer(const PersonalOfPlayer &);
+    void change_value(int columns, int lines, double change_value)
+    {
+        matrix_matrix[columns][lines] = change_value;
+    }
+    
+    void return_string();
+    
+
+    void add_number(int columns, int lines, double add_value)
+    {
+        for (int i = 0; i < columns; i++)
+        {
+            for (int j = 0; j < lines; j++)
+            {
+                matrix_matrix[i][j] += add_value;
+            }
+        }
+    }
+    
+    void matrix_transsposed();
+    void transfer(int columns, int lines)
+    {
+        vector<vector<double>>matrix_transsposed(lines, vector<double>( columns ) );
+        a = tr;
+        int t;
+        t = row;
+        row = column;
+        column = t;
+        
+        for (int i = 0; i < lines; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                matrix_transsposed[i][j] = matrix_matrix[j][i];
+            }
+        }
+        
+        
+    }
+    
+    void read_file();
+    
+    void save_file();
+    
+    void print_matrix();
+    
 };
 
-//ponizej okreslam klase kopiujaca. Korzystam dodatkowo z konstruktora.
-CopyTeam::CopyTeam(const PersonalOfPlayer &source)
+void print_file(vector<string>temp)
 {
-    PlayerName=source.PlayerName;
-    PlayerSurname=source.PlayerSurname;
-    PlayerHeight=source.PlayerHeight;
-    PlayerAge=source.PlayerAge;
-    PlayerPosition=source.PlayerPosition;
+    for (int ii=0 ; ii <= temp.size() ; ii++)
+    {
+        cout << temp[ii] << "\n";
+    }
 }
 
-class Team
+void print_matrix(int columns, int lines, &matrix)
 {
-public:
-    //Ponizej tworze kontener dla zespolu pojedynczego ktory zawiera w sobie struktury informacji o
-    //pojedynczych zawodnikach. Czyli wypelniam kontener "OneTeam" pojedynczym kontenerami = zawodnikami,
-    //co czynie podajac liczbe iteracji w petli.
-    //ponizej takze przekazuje informacje, że wypełnienie kontenera "OneTeam" bedzie dokonane poprzez
-    //typ którym jest wektor "OnePlayer". Tak tworzę drużynę.
-    
-    Team (int Teams, int Players)
+    for (int ii=0 ; ii <= columns ; ii++)
     {
-        //vector<vector<PersonalOfPlayer>>OneTeam( Teams, vector<PersonalOfPlayer>( Players ) );
-        //return OneTeam;
-    };
-    
-    
-};
+        for (int jj=0 ;  jj<= lines ; jj++)
+        {
+            cout << "Kolumna: " << ii+1 << " wiersz: " << jj+1 << "wynosi: " << matrix_matrix[ii][jj] << endl;
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\---//////////////////////////////////\\
+///////////////////////////////////---\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+//////////////////////////////////////////////////////////////////////////
 
 int main()
 {
-    int PlayersNumber;
-    int TeamNumbers;
-    int team_number;
-    int player_number;
-    char choice2;
-    char choice3;
-    char choice4;
+    int matrix_columns;
+    int matrix_lines;
+    int exit = 0;
+    int jj=1;
     char continuation;
+    char answer;
     string GetTeamName;
     string nameTemp;
-    int exit = 0;
-    
-    
+    string file_name;
+    string templine;
+    string tempstring;
+    vector<string>lineslines;
+    string tempstring_temp;
+    string ww;
+    fstream file;
+    fstream team;
+    int change_column;
+    int change_line;
+    double change_value;
     
     using namespace std;
-    
-    
-    
+
     while(exit==0)
     {
-        //ponizej definiuje wektor z nazwami druzyn. Wypelniam go inna metoda poprzez tzw "push backi"
-        //vector<TeamName>teamTeam;
-        //ponizej podaj w nawiasach < typ zmiennej > jakim bedzie wypelniony moj kontener jednego zawodnika.
-        //Mogle wybrac integera, char itp., jednak na potrzeby programu pojedynczy kontener zawodnika nalezy
-        //wypelnic innym typem, a mianowicie typem struktury z klasy ktora zostala utworzona i dodatkowo
-        //zostal stworzony konstruktor "PersonalOfPlayer. W C++ struktura "struct" i klasa "class"
-        //sa bardzo pododbne
-        //vector<double>matrix;
-        
-        //ponizej tworze wektor ktory bedzie grupowac wszystkie zespoly do kontenerka "ChampionsLeage"
-        
-        cout << "Super ! Wlasnie uruchomiles program do labolatorium nr 6 na kierunku Informatyka\n";
+        cout << "Super ! Wlasnie uruchomiles program do labolatorium nr 6 na kierunku informatyka\n";
         cout << "Program umozliwi Ci stworzenie macierzy.\n";
         cout << "Bedziesz mogl takze wykonac kilka dzialan na macierzach.\n";
         cout << "Powodzenia i fajnej zabawy przy tworzeniu macierzy.\n";
         cout << "\n\n\n";
-        cout << "Podaj liczbe kolumn macierzy\n";
-        cin >> TeamNumbers;
-        cout << "\n Podaj liczbe wierszy\n";
-        cin >> PlayersNumber;
+        cout << "Podaj nazwe pliku w ktorym ma byc zapisana macierz\n";
+        cin >> file_name;
         
-        
-        
-        //ponizej definiuje wektor wielowymiarowy z okreslona liczba druzyn oraz zawodnikow
-        
-        vector<vector<PersonalOfPlayer>>matrix( TeamNumbers, vector<PersonalOfPlayer>( PlayersNumber ) );
-        
-        
-        Team(TeamNumbers, PlayersNumber);
-        
-        //ponizej tworze petle w petli ktora ma zadanie dodac druzyny i zawodnikow do poszczegolnych druzyn
-        for (int j=0 ; j<TeamNumbers ; j++)
+        file.open(file_name+=".txt", ios::in);
+        if(file.good()==false)
         {
-            
-            cout << "\nPodaj nazwe druzyny nr:" << j+1 << endl;
-            cin >> GetTeamName;
-            teamTeam.push_back(TeamName(GetTeamName));
-            
-            for (int i=0 ; i<PlayersNumber ; i++)
-            {
-                cout << "\nPodaj nazwisko zawodnika nr\t" << i+1 << "\t dla druzyny numer:" << j+1 << ":\n";
-                string name;
-                cin >> name;
-                OneTeam[j][i].PlayerName=name;
-                
-                cout << "\nPodaj imie zawodnika nr\t" << i+1 << "\t dla druzyny numer:" << j+1 << ":\n";
-                string surname;
-                cin >> surname;
-                OneTeam[j][i].PlayerSurname=surname;
-                
-                cout << "\nPodaj wzrost zawodnika nr\t" << i+1 << "\t dla druzyny numer:" << j+1 << ":\n";
-                string height;
-                cin >> height;
-                OneTeam[j][i].PlayerHeight=height;
-                
-                cout << "\nPodaj wiek zawodnika nr\t" << i+1 << "\t dla druzyny numer:" << j+1 << ":\n";
-                string age;
-                cin >> age;
-                OneTeam[j][i].PlayerAge=age;
-                
-                cout << "\nPodaj pozycje zawodnika nr\t" << i+1 << "\t dla druzyny numer:" << j+1 << ":\n";
-                string position;
-                cin >> position;
-                OneTeam[j][i].PlayerPosition=position;
-            }
-            //ponizej aby sprawdzic czy wprowadzilem poprawnie korzystam z petli iteracyjnej do wypisania
-            //poszczegolnych danych pojedynczego zawodnika
-            for ( int ii=0 ; ii<PlayersNumber ; ii++)
-            {
-                cout << "\nNazwisko zawodnika nr:\t" << ii+1 << " to " << OneTeam[j][ii].PlayerName;
-                cout << "\nImie zawodnika nr:\t" << ii+1 << " to " << OneTeam[j][ii].PlayerSurname;
-                cout << "\nWzrost zawodnika nr:\t" << ii+1 << " to " << OneTeam[j][ii].PlayerHeight;
-                cout << "\nWiek zawodnika nr:\t" << ii+1 << " to " << OneTeam[j][ii].PlayerAge;
-                cout << "\nPozycja zawodnika nr:\t" << ii+1 << " to " << OneTeam[j][ii].PlayerPosition;
-            }
-        }
-        
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        //ponizej kopiuje do wektora mowa druzyne
-        cout << "\n\n\nCzy chcesz utworzyc kolejna druzyne i skopiowac zawodnikow z ostatniej druzyny ??";
-        cout << "\nW przypadku ponownego uruchomienia wpisz litere ''t'', w przerciwnym razie wpisz litere ''n''.\n";
-        cin >> choice2;
-        if (choice2 == 't')
-        {
-            
-            cout << "\nPojemnosc wektora przed rozszerzeniem to:" << OneTeam.size();
-            
-            teamTeam.resize(TeamNumbers+1, TeamName(GetTeamName));
-            
-            OneTeam.resize(TeamNumbers+1, vector<PersonalOfPlayer>(PlayersNumber) );
-            
-            cout << "\nPojemnosc wektora nazwa druzyn po resize to:" << OneTeam.size();
-            
-            teamTeam[TeamNumbers+1].nameOfTeam=teamTeam[TeamNumbers].nameOfTeam;
-            
-            cout << "\nNazwa skopiowanej dryzyny to:" << teamTeam[TeamNumbers+1].nameOfTeam;
-            
-            TeamNumbers = TeamNumbers+1;
-            
-            cout << "\nIlosc zespolow wynosi:" << TeamNumbers;
-            
-            //*OneTeam[2][2].PlayerName = &OneTeam[0][0].PlayerName;
-            
+            cout << "Przykro mi! Jednak program nie mogl odnalezc pliku o takiej nazwie.";
+            cout << "Program teraz utworzy nowy plik o nazwie ''matrix.txt''";
+            file.open("matrix.txt", ios::out | ios::app);
+            cout << "Utworzona macierz bedzie miala rozmiar 4x3" << endl;
+            matrix_columns=4;
+            matrix_lines=3;
+            matrix(matrix_columns, matrix_lines);
         }
         else
         {
-            cout << "Niestety zdecydowales by nie dodawac kolejnej druzyny.";
-            cout << "Ale masz ponizej jeszcze opcje wyswietlania druzyn i zawodnikow.";
+            cout << "Brawo! Wlasnie otworzyles plik o nazwie ''Matrix''" << endl;
+            while(getline(file, templine))
+            {
+                lineslines.push_back(templine);
+                jj++;
+            }
+            matrix_columns=stoi(lineslines[0]);
+            matrix_lines=stoi(lineslines[1]);
+            //lineslines.erase (lineslines.begin(),lineslines.begin()+2);
+            matrix(matrix_columns, matrix_lines, lineslines);
         }
         
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        //ponizej wyswietlam wszystkich zawodnikow
-        cout << "\n\n\nCzy chcesz wyswietlic zawodnikow ze wszystkich druzyn ??";
-        cout << "\nW przypadku wyboru ''tak'' wpisz litere ''t'', w przerciwnym razie wpisz litere ''n''.\n";
-        cin >> choice3;
-        if (choice3 == 't')
+        cout << "Czy chcesz wyswietlic zawartosc pliku??\n";
+        cin >> answer;
+        if (answer == 't')
         {
-            for (int ij=0 ; ij<TeamNumbers  ; ij++)
             {
-                cout << "\n\n\nZawodnicy druzyny " << teamTeam[ij].nameOfTeam << " maja nastepujace dane:\n";
-                
-                for ( int io=0 ; io<PlayersNumber ; io++)
-                {
-                    cout << "\nNazwisko zawodnika nr:\t" << io+1 << " to " << OneTeam[ij][io].PlayerName;
-                    cout << "\nImie zawodnika nr:\t" << io+1 << " to " << OneTeam[ij][io].PlayerSurname;
-                    cout << "\nWzrost zawodnika nr:\t" << io+1 << " to " << OneTeam[ij][io].PlayerHeight;
-                    cout << "\nWiek zawodnika nr:\t" << io+1 << " to " << OneTeam[ij][io].PlayerAge;
-                    cout << "\nPozycja zawodnika nr:\t" << io+1 << " to " << OneTeam[ij][io].PlayerPosition;
-                }
+                cout << "Teraz beda wyswietlone wszystkie linie\n";
+                print_file(lineslines);
             }
         }
         
-        else
+        cout << "Ilosc kolumn macierzy wynosi: " << matrix_columns << " ilosc wierszy macierzy wynosi: " << matrix_lines << endl;
+        
+        cout << "Podaj nr kolumny i wiersza w ktorej ma byc zmieniona wartosc:\n" << endl;
+        cout << "Kolumna: " << endl;
+        cin >> change_column;
+        cout << "Wiersz: " << endl;
+        cin >> change_line;
+        cout << "Podaj nowa wartosc dla elementu macierzy: " << endl;
+        cin >> change_value;
+        change_value(change_column, change_line, change_value);
+        
+        
+        
+
+        
+        cout << "Czy chcesz wyswietlic zawartosc macierzy??\n";
+        cin >> answer;
+        if (answer == 't')
         {
-            cout << "Niestety zdecydowales by nie wyswietlac calej listy druzyn i zawodnikow";
-            cout << "Ale masz ponizej jeszcze jedna opcje do wyboru.";
+            {
+                cout << "Teraz beda wyswietlone wszystkie linie\n";
+                //print_matrix(matrix_columns, matrix_lines, matrix_matrix);
+            }
         }
         
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        //ponizej wyswietlam okreslonego zawodnika
-        cout << "\n\n\nCzy chcesz wyswietlic dane okreslonego zawodnika z okreslonej druzyny ??";
-        cout << "W przypadku ponownego uruchomienia wpisz litere ''t'', w przerciwnym razie wpisz litere ''n''.\n";
-        cin >> choice4;
-        if (choice4 =='t')
-        {
-            cout << "Podaj numer druzyny ktorej dane zawodnika chcesz wyswietlic\n";
-            cin >> team_number;
-            cout << "Podaj numer zawodnika ktoreg dane chcesz wyswietlic\n";
-            cin >> player_number;
-            cout << "\nZawodnik druzyny " << teamTeam[team_number].nameOfTeam << " ma nastepujace dane:";
-            cout << "\nNazwisko zawodnika:";
-            cout << OneTeam[team_number-1][player_number-1].PlayerName << "\n" << endl;
-            cout << "\nImie zawodnika:";
-            cout << OneTeam[team_number-1][player_number-1].PlayerSurname << "\n" << endl;
-            cout << "\nWzrost zawodnika:";
-            cout << OneTeam[team_number-1][player_number-1].PlayerHeight << "\n" << endl;
-            cout << "\nWiek zawodnika:";
-            cout << OneTeam[team_number-1][player_number-1].PlayerAge << "\n" << endl;
-            cout << "\nPozycja na boisku zawodnika:";
-            cout << OneTeam[team_number-1][player_number-1].PlayerPosition << "\n" << endl;
-        }
-        else
-        {
-            cout << "Niestety, niechcesz dodac kolejnej druzyny, moze nastepnym razem";
-        }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////////
         
+        
+        
+        for (int il=0 ; il <= matrix_columns ; il++)
+        {
+            for (int jk=0 ;  jk<= matrix_lines ; jk++)
+            {
+                //cout << "Kolumna: " << il+1 << " wiersz: " << jk+1 << "wynosi: " << &matrix_matrix[il][jk] << endl;
+            }
+        }
+
+        
+
+      
+        
+        cout << "Teraz bedziesz mogl zmodyfikowac wartosci dla elementow macierzy" << endl;
+        cout << "Podaj ";
+
+  
+        file.close();
         while(1)
         {
             cout << "\nProgram wlasnie zakonczyl swoje dzialanie";
@@ -300,3 +258,80 @@ int main()
     }
     return 0;
 }
+
+
+
+
+
+
+/*
+ cout << "Czy chcesz wyswietlic zawartosc pliku??\n";
+ cin >> answer;
+ if (answer == 't')
+ {
+ {
+ while(getline(file, templine))
+ {
+ lineslines.push_back(templine);
+ jj++;
+ }
+ cout << "Teraz beda wyswietlone wszystkie linie\n";
+ 
+ for (int ii=0 ; ii <= lineslines.size() ; ii++)
+ {
+ cout << lineslines[ii] << "\n";
+ }
+ }
+ }
+ */
+
+
+
+/*
+
+void matrix::create_matrix()
+{
+    vector<vector<matrix>>matrix_matrix( m_columns, vector<matrix>( m_lines ) );
+
+    for (int j=0 ; j<m_columns ; j++)
+    {
+        for (int i=0 ; i<m_lines ; i++)
+        {
+            matrix_matrix[j][i].number=matrix_number;
+        }
+        for ( int ii=0 ; ii<matrix_lines ; ii++)
+        {
+            cout << "Liczba dla kolumny" << matrix_columns << "wiersza" << matrix_lines << "wynosi" << matrix_matrix[j][ii].number << endl;
+        }
+    }
+}
+
+int allocate_data(int colums, int lines)
+{
+    matrix_matrix.reserve(columns);
+    matrix_matrix.resize(lines);
+    return 0;
+}
+
+
+vector<string>data::void file_file()
+{
+    
+}
+
+
+
+
+void file_read2 ()
+{
+    ifstream inputFile ("");
+    if (! inputFile . is_open ())
+        throw std::exception ("");
+    string lineAsString ;
+    while (! inputFile .eof ())
+    {
+        inputFile >> lineAsString ;
+        cout << lineAsString << endl ;
+    }
+}
+*/
